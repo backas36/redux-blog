@@ -1,8 +1,94 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { getPosts } from '../../WebAPI'
+import styled from '@emotion/styled'
+import { Link } from 'react-router-dom'
+
+
+const PostsWrapper = styled.main`
+  max-width:960px;
+  margin:30px auto;
+`
+const PostWrapper = styled.div`
+  box-shadow: 0 4px 10px 0 rgb(0 0 0 / 20%), 0 4px 20px 0 rgb(0 0 0 / 19%);
+  padding:30px ;
+  background:#fff;
+  & + & {
+    margin-top:20px;
+  }
+`
+
+const PostTitle = styled(Link)`
+  font-size:28px;
+  color:#000;
+  text-decoration:none;
+`
+const PostCreated = styled.div`
+  display:flex;
+  margin-top:12px;
+`
+const PostAuthor = styled.div`
+  margin-right:12px;
+  
+`
+
+const PostDate = styled.div`
+  font-weight:300;
+  color:rgba(0,0,0,0.6);
+  font-size:16px;
+`
+const PostBody = styled.div`
+  margin-top:30px;
+  font-size:18px;
+`
+const Button = styled.button`
+  margin-top:30px;
+  border:1px solid #ccc;
+  padding:8px 24px;
+  background:#fff;
+  cursor:pointer;
+  transition: background 0.2s;
+  &:hover{
+    background:#ccc;
+  }
+`
+
+const Post = ({ post }) => {
+  const { title, createdAt, id, body } = post
+  return (
+    <>
+      <PostWrapper>
+        <PostTitle to={`/posts/${id}`}>{title}</PostTitle>
+        <PostCreated>
+          <PostAuthor>user01</PostAuthor>
+          <PostDate>{new Date(createdAt).toLocaleString()}</PostDate>
+        </PostCreated>
+        <PostBody>{body}</PostBody>
+        <Button to={`/posts/${id}`}>Read More</Button>
+      </PostWrapper>
+    </>
+  )
+}
 
 const HomePage = () => {
+  const [posts, setPosts] = useState([])
+
+  useEffect(() => {
+    const fetchPostsData = async () => {
+      const postsData = await getPosts()
+      setPosts(postsData)
+    }
+    fetchPostsData()
+  }, [])
+
   return (
-    <div>HomePage</div>
+    <>
+      <PostsWrapper>
+        {posts.map(post => (
+          <Post post={post} key={post.id} />
+        ))}
+      </PostsWrapper>
+
+    </>
   )
 }
 

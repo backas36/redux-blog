@@ -19,7 +19,6 @@ const App = () => {
     if (getAuthToken()) {
       getMe().then(response => {
         if (response.ok === 1) {
-          console.log(response)
           setUser(response.data)
         }
       })
