@@ -25,11 +25,12 @@ const SiteName = styled(Link)`
   color:rgba(0,0,0, 0.6);
   text-decoration:none;
 `
-const SiteDesc = styled.div`
+const SiteDesc = styled(Link)`
   font-size:18px;
   font-weight:300;
   color:rgba(0,0,0, 0.6);
   margin-top:12px;
+  text-decoration:none;
 
 `
 const NavbarList = styled.div`
@@ -57,7 +58,7 @@ const Header = () => {
     <HeaderContainer>
       <SiteInfo>
         <SiteName to="/">Lidemy Blog</SiteName>
-        <SiteDesc>Welcom to the blog of Yang</SiteDesc>
+        <SiteDesc to="/about">Welcom to the blog of Lidemy-Yang</SiteDesc>
       </SiteInfo>
       <NavbarList>
         <Nav to="/post-list">所有文章</Nav>

@@ -4,6 +4,7 @@ import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
 
 
+
 const PostsWrapper = styled.main`
   max-width:960px;
   margin:30px auto;
@@ -21,6 +22,11 @@ const PostTitle = styled(Link)`
   font-size:28px;
   color:#000;
   text-decoration:none;
+  overflow: hidden;
+    white-space: nowrap;
+    width: 80%;
+    text-overflow: ellipsis;
+    display: block;
 `
 const PostCreated = styled.div`
   display:flex;
@@ -39,9 +45,17 @@ const PostDate = styled.div`
 const PostBody = styled.div`
   margin-top:30px;
   font-size:18px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 `
-const Button = styled.button`
+const LinkToPost = styled(Link)`
   margin-top:30px;
+  display:inline-block;
+  color:rgba(0,0,0,0.6);
+  text-decoration:none;
   border:1px solid #ccc;
   padding:8px 24px;
   background:#fff;
@@ -63,7 +77,7 @@ const Post = ({ post }) => {
           <PostDate>{new Date(createdAt).toLocaleString()}</PostDate>
         </PostCreated>
         <PostBody>{body}</PostBody>
-        <Button to={`/posts/${id}`}>Read More</Button>
+        <LinkToPost to={`/posts/${id}`}>Read More</LinkToPost>
       </PostWrapper>
     </>
   )
