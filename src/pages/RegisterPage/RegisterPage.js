@@ -1,10 +1,11 @@
-import React, { useState, useContext } from 'react'
-import styled from '@emotion/styled'
-import { useHistory, Link } from 'react-router-dom'
+import { useState, useContext } from "react"
+import styled from "@emotion/styled"
+import { useHistory } from "react-router-dom"
 
-import { login, getMe } from '../../WebAPI'
+import { register, getMe } from '../../WebAPI'
 import { setAuthToken } from '../../utils'
-import { AuthContext } from '../../contexts'
+import { AuthContext } from "../../contexts"
+
 
 const FormContainer = styled.form`
   max-width:960px;
@@ -30,7 +31,7 @@ const Button = styled.button`
   color:rgba(0,0,0, 0.6);
   transition:background-color 0.2s;
   margin-left:20px;
-
+  
   &:hover {
     background-color:#ccc;
   }
@@ -49,23 +50,28 @@ const ErrorMsg = styled.div`
   color:#ef4a52;
 `
 
-const LoginPage = () => {
+
+const RegisterPage = () => {
   const { setUser } = useContext(AuthContext)
   const [username, setUsername] = useState('')
+  const [nickname, setNickname] = useState('')
   const [password, setPassword] = useState('')
+  const [password2, setPassword2] = useState('')
+
   const [errorMsg, setErrorMsg] = useState()
   const history = useHistory()
 
   const handleSubmit = async (e) => {
     setErrorMsg(null)
+    if (!username || !nickname || !password || !password2) return setErrorMsg('請填入完整資料')
 
-    if (!username || !password) return setErrorMsg('請填入完整資料')
+    if (password !== password2) return setErrorMsg('請確認兩次密碼是否相符')
 
-    const loginResult = await login(username, password)
+    const registerResult = await register(username, nickname, password)
     try {
-      if (loginResult.ok === 0) return setErrorMsg(loginResult.message)
-      setAuthToken(loginResult.token)
+      if (registerResult.ok !== 1) return setErrorMsg(registerResult.message)
 
+      setAuthToken(registerResult.token)
       const getUserData = await getMe()
       if (getUserData.ok !== 1) {
         setAuthToken(null)
@@ -78,6 +84,13 @@ const LoginPage = () => {
     }
   }
 
+  const handleResetClick = () => {
+    setErrorMsg(null)
+    setUsername('')
+    setNickname('')
+    setPassword('')
+    setPassword2('')
+  }
   return (
     <FormContainer onSubmit={handleSubmit}>
       <div>
@@ -86,21 +99,28 @@ const LoginPage = () => {
         </InputTItle>
       </div>
       <div>
+        <InputTItle>nickname
+          <input value={nickname} onChange={e => setNickname(e.target.value)} />
+        </InputTItle>
+      </div>
+      <div>
         <InputTItle>
           password
           <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
         </InputTItle>
       </div>
-      <Button type="submit">Login</Button>
-      <Link to="/register">
-        <Button type="button">
-          Register
-        </Button>
-      </Link>
-
+      <div>
+        <InputTItle>
+          comfirm password
+          <input type="password" value={password2} onChange={e => setPassword2(e.target.value)} />
+        </InputTItle>
+      </div>
+      <Button type="reset" onClick={handleResetClick}>Reset</Button>
+      <Button type="submit">Register</Button>
       {errorMsg && <ErrorMsg>{errorMsg}</ErrorMsg>}
+
     </FormContainer>
   )
 }
 
-export default LoginPage
+export default RegisterPage

@@ -13,6 +13,8 @@ import { getAuthToken } from '../../utils'
 import { getMe } from '../../WebAPI'
 import { AuthContext } from '../../contexts'
 import PostPage from '../../pages/PostPage'
+import AddNewPostPage from '../../pages/AddNewPostPage'
+import RegisterPage from '../../pages/RegisterPage'
 
 const App = () => {
   const [user, setUser] = useState([null])
@@ -43,6 +45,12 @@ const App = () => {
             <LoginPage />
           </Route>
           <Route path="/posts/:id" children={<PostPage />} />
+          <Route path="/new-post">
+            <AddNewPostPage />
+          </Route>
+          <Route path="/register">
+            <RegisterPage />
+          </Route>
         </Switch>
       </Router>
     </AuthContext.Provider>

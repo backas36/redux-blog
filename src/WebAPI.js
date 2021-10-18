@@ -33,3 +33,34 @@ export const getMe = async () => {
   })
   return result.json()
 }
+
+export const postNewPost = async (title, body) => {
+  const token = getAuthToken()
+  const result = await fetch(`${BASE_URL}/posts`, {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      'authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({
+      title,
+      body
+    })
+  })
+  return result.json()
+}
+
+export const register = async (username, nickname, password) => {
+  const result = await fetch(`${BASE_URL}/register`, {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      username,
+      nickname,
+      password
+    })
+  })
+  return result.json()
+}
