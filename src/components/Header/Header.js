@@ -61,7 +61,7 @@ const Header = () => {
         <SiteDesc to="/about">Welcom to the blog of Lidemy-Yang</SiteDesc>
       </SiteInfo>
       <NavbarList>
-        <Nav to="/post-list">所有文章</Nav>
+        <Nav to="/posts-list">所有文章</Nav>
         {user && <Nav to="/new-post">發佈新文章</Nav>}
         {!user && <Nav to="/login">登入</Nav>}
         {user && <Nav to="/" onClick={handleLogout}>登出</Nav>}

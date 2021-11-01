@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import { getLast5Posts } from '../../WebAPI'
-import styled from '@emotion/styled'
-import { Link } from 'react-router-dom'
-
+import { useEffect, useState } from "react"
+import styled from "@emotion/styled"
+import { Link } from "react-router-dom"
+import { getPosts } from "../../WebAPI"
 
 
 const PostsWrapper = styled.main`
@@ -62,32 +61,9 @@ const LinkToPost = styled(Link)`
     background:#ccc;
   }
 `
-const CurrentPage = styled.div`
-  font-size:18px;
-`
-
-const PaginateWrapper = styled.div`
-  display:flex;
-  align-items:center;
-  margin-bottom:40px;
-  justify-content:center;
-`
-const PaginateBtn = styled.button`
-  border:0;
-  text-decoration:underline;
-  margin:0 12px;
-  cursor:pointer;
-  opacity:0.5;
-  transition: opacity .5s;
-  &:hover{
-    opacity:1;
-  }
-`
-
 
 const Post = ({ post }) => {
   const { title, createdAt, id, body } = post
-
   return (
     <>
       <PostWrapper>
@@ -102,28 +78,16 @@ const Post = ({ post }) => {
   )
 }
 
-const HomePage = () => {
+const PostsListPage = () => {
   const [posts, setPosts] = useState([])
-  const [currentPageNum, setCurrentPageNum] = useState(1)
 
   useEffect(() => {
     const fetchPostsData = async () => {
-      const postsData = await getLast5Posts(currentPageNum)
+      const postsData = await getPosts()
       setPosts(postsData)
     }
     fetchPostsData()
-  }, [currentPageNum])
-
-  const handleClickDecrementBtn = () => {
-    if (currentPageNum > 1) {
-      setCurrentPageNum(currentPageNum - 1)
-    }
-  }
-
-  const handleClickIncrementBtn = () => {
-
-    setCurrentPageNum(currentPageNum + 1)
-  }
+  }, [])
 
   return (
     <>
@@ -132,17 +96,8 @@ const HomePage = () => {
           <Post post={post} key={post.id} />
         ))}
       </PostsWrapper>
-      <PaginateWrapper>
-        {currentPageNum > 1 && (
-          <PaginateBtn onClick={handleClickDecrementBtn}>pre</PaginateBtn>
-        )}
-        <CurrentPage>{currentPageNum}</CurrentPage>
-        {posts.length === 5 && (
-          <PaginateBtn onClick={handleClickIncrementBtn}>next</PaginateBtn>
-        )}
-      </PaginateWrapper>
     </>
   )
 }
 
-export default HomePage
+export default PostsListPage

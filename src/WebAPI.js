@@ -1,8 +1,14 @@
 import { getAuthToken } from "./utils"
 const BASE_URL = 'https://student-json-api.lidemy.me'
+const paginate_limit = 5
 
 export const getPosts = async () => {
   const result = await fetch(`${BASE_URL}/posts?_sort=createdAt&_order=desc`)
+  return result.json()
+}
+
+export const getLast5Posts = async (pageNum) => {
+  const result = await fetch(`${BASE_URL}/posts?_sort=createdAt&_order=desc&_page=${pageNum}&_limit=${paginate_limit}`)
   return result.json()
 }
 
@@ -62,5 +68,11 @@ export const register = async (username, nickname, password) => {
       password
     })
   })
+  return result.json()
+}
+
+// 目前沒用到，以後可能會用到的 api
+export const getUserNickname = async (userId) => {
+  const result = await fetch(`${BASE_URL}/users/${userId}`)
   return result.json()
 }

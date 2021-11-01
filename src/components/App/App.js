@@ -15,9 +15,10 @@ import { AuthContext } from '../../contexts'
 import PostPage from '../../pages/PostPage'
 import AddNewPostPage from '../../pages/AddNewPostPage'
 import RegisterPage from '../../pages/RegisterPage'
+import PostsListPage from '../../pages/PostsListPage/AllPostsPage'
 
 const App = () => {
-  const [user, setUser] = useState([null])
+  const [user, setUser] = useState(null)
 
   useEffect(() => {
     if (getAuthToken()) {
@@ -45,6 +46,9 @@ const App = () => {
             <LoginPage />
           </Route>
           <Route path="/posts/:id" children={<PostPage />} />
+          <Route path="/posts-list">
+            <PostsListPage />
+          </Route>
           <Route path="/new-post">
             <AddNewPostPage />
           </Route>
