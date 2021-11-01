@@ -58,7 +58,7 @@ const Header = () => {
     <HeaderContainer>
       <SiteInfo>
         <SiteName to="/">Lidemy Blog</SiteName>
-        <SiteDesc to="/about">Welcom to the blog of Lidemy-Yang</SiteDesc>
+        <SiteDesc to="/about">Welcome to the blog of Lidemy-Yang</SiteDesc>
       </SiteInfo>
       <NavbarList>
         <Nav to="/posts-list">所有文章</Nav>
