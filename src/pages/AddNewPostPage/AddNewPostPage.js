@@ -1,7 +1,8 @@
 import { useState } from "react"
 import styled from "@emotion/styled"
-import { postNewPost } from '../../WebAPI'
 import { useHistory } from "react-router-dom"
+import { newPost } from "../../redux/reducers/postReducer"
+import { useDispatch } from 'react-redux'
 
 const FormWrapper = styled.form`
   max-width:960px;
@@ -69,18 +70,37 @@ const AddNewPostPage = () => {
   const [errorMsg, setErrorMsg] = useState()
   const history = useHistory()
 
+  const dispatch = useDispatch()
+  //const newPostReponse = useSelector(store => store.posts.newPostResponse)
+
   const handleSubmit = async (e) => {
-    console.log(postTitle, postBody)
     setErrorMsg(null)
     if (!postTitle || !postBody) return setErrorMsg('請填入完整內容')
-    const result = await postNewPost(postTitle, postBody)
+
+
     try {
+      const result = await dispatch(newPost(postTitle, postBody))
       if (result.ok === 0) return setErrorMsg(result.message)
-      history.push('/')
+      history.push('/posts/' + result.id)
     } catch {
       setErrorMsg('請稍後再試試看')
     }
   }
+
+  //useEffect(() => {
+  //  return () => {
+  //    dispatch(setNewPostResponse(null))
+  //  }
+  //}, [dispatch])
+
+  //useEffect(() => {
+  //  if (newPostReponse) {
+  //    if (newPostReponse.ok === 0) return setErrorMsg(newPostReponse.message)
+  //    history.push('/posts/' + newPostReponse.id)
+  //  }
+
+  //}, [newPostReponse, history])
+
 
   return (
     <FormWrapper onSubmit={handleSubmit}>

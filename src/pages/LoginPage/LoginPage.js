@@ -1,10 +1,10 @@
-import React, { useState, useContext } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from '@emotion/styled'
 import { useHistory, Link } from 'react-router-dom'
 
-import { login, getMe } from '../../WebAPI'
-import { setAuthToken } from '../../utils'
-import { AuthContext } from '../../contexts'
+
+import { getLogin, getUser, setErrorMsg } from '../../redux/reducers/userReducer'
+import { useDispatch, useSelector } from 'react-redux'
 
 const FormContainer = styled.form`
   max-width:960px;
@@ -50,31 +50,26 @@ const ErrorMsg = styled.div`
 `
 
 const LoginPage = () => {
-  const { setUser } = useContext(AuthContext)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [errorMsg, setErrorMsg] = useState()
+  const errorMsg = useSelector(store => store.user.errorMsg)
   const history = useHistory()
 
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    return () => dispatch(setErrorMsg(null))
+  }, [dispatch])
+
   const handleSubmit = async (e) => {
-    setErrorMsg(null)
+    if (!username || !password) return dispatch(setErrorMsg('請填入完整資料'))
 
-    if (!username || !password) return setErrorMsg('請填入完整資料')
-
-    const loginResult = await login(username, password)
     try {
-      if (loginResult.ok === 0) return setErrorMsg(loginResult.message)
-      setAuthToken(loginResult.token)
-
-      const getUserData = await getMe()
-      if (getUserData.ok !== 1) {
-        setAuthToken(null)
-        return setErrorMsg(getUserData.toString())
-      }
-      setUser(getUserData.data)
+      await dispatch(getLogin(username, password))
+      await dispatch(getUser())
       history.push('/')
     } catch {
-      setErrorMsg('請稍後再登入看看')
+      dispatch(setErrorMsg('請稍後再登入看看'))
     }
   }
 

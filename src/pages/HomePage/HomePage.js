@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { getLast5Posts } from '../../WebAPI'
 import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
+import { useSelector } from "react-redux";
 
 
 
@@ -61,6 +62,9 @@ const LinkToPost = styled(Link)`
   &:hover{
     background:#ccc;
   }
+  & + & {
+    margin-left:8px;
+  }
 `
 const CurrentPage = styled.div`
   font-size:18px;
@@ -86,7 +90,8 @@ const PaginateBtn = styled.button`
 
 
 const Post = ({ post }) => {
-  const { title, createdAt, id, body } = post
+  const { title, createdAt, id, body, userId } = post
+  const user = useSelector(store => store.user.user)
 
   return (
     <>
@@ -97,6 +102,9 @@ const Post = ({ post }) => {
         </PostCreated>
         <PostBody>{body}</PostBody>
         <LinkToPost to={`/posts/${id}`}>Read More</LinkToPost>
+        {user && user.id === userId && <LinkToPost to={`/posts/${id}`}>Delete</LinkToPost>}
+
+
       </PostWrapper>
     </>
   )

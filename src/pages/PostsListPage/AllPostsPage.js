@@ -93,7 +93,7 @@ const PostsListPage = () => {
     <>
       <PostsWrapper>
         {posts.map(post => (
-          <Post post={post} key={post.id} />
+          < Post post={post} key={post.id} />
         ))}
       </PostsWrapper>
     </>

@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import styled from '@emotion/styled'
 import { useParams } from "react-router";
-import { getSinglePost } from "../../WebAPI";
+import { getPost } from "../../redux/reducers/postReducer";
+import { useDispatch, useSelector } from "react-redux";
 
 const PostWrapper = styled.div`
   max-width:960px;
@@ -34,25 +35,27 @@ const PostBody = styled.div`
 
 const PostPage = () => {
   let { id } = useParams()
-  const [post, setPost] = useState([])
+  const dispatch = useDispatch()
+  const isLoading = useSelector(store => store.posts.isLoadingPost)
+  const post = useSelector(store => store.posts.post)
+
   useEffect(() => {
-    const fetchPostData = async () => {
-      const postData = await getSinglePost(id)
-      setPost(postData)
-    }
-    fetchPostData()
-  }, [id])
+    dispatch(getPost(id))
+  }, [id, dispatch])
 
   return (
     <>
-      <PostWrapper>
-        <PostTitle>{post.title}</PostTitle>
-        <PostCreated>
-          <PostAuthor>user01</PostAuthor>
-          <PostDate>{new Date(post.createdAt).toLocaleString()}</PostDate>
-        </PostCreated>
-        <PostBody>{post.body}</PostBody>
-      </PostWrapper>
+      {isLoading ? <div>loading ...</div> : (
+        <PostWrapper>
+          <PostTitle>{post.title}</PostTitle>
+          <PostCreated>
+            <PostAuthor>user01</PostAuthor>
+            <PostDate>{new Date(post.createdAt).toLocaleString()}</PostDate>
+          </PostCreated>
+          <PostBody>{post.body}</PostBody>
+        </PostWrapper>
+
+      )}
     </>
   )
 }

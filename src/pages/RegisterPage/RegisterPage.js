@@ -1,10 +1,9 @@
-import { useState, useContext } from "react"
+import { useState, useEffect } from "react"
 import styled from "@emotion/styled"
 import { useHistory } from "react-router-dom"
 
-import { register, getMe } from '../../WebAPI'
-import { setAuthToken } from '../../utils'
-import { AuthContext } from "../../contexts"
+import { register, setErrorMsg, getUser } from '../../redux/reducers/userReducer'
+import { useDispatch, useSelector } from "react-redux"
 
 
 const FormContainer = styled.form`
@@ -52,40 +51,37 @@ const ErrorMsg = styled.div`
 
 
 const RegisterPage = () => {
-  const { setUser } = useContext(AuthContext)
   const [username, setUsername] = useState('')
   const [nickname, setNickname] = useState('')
   const [password, setPassword] = useState('')
   const [password2, setPassword2] = useState('')
-
-  const [errorMsg, setErrorMsg] = useState()
+  const errorMsg = useSelector(store => store.user.errorMsg)
+  const dispatch = useDispatch()
   const history = useHistory()
 
+  useEffect(() => {
+    return () => dispatch(setErrorMsg(null))
+  }, [dispatch])
+
+
   const handleSubmit = async (e) => {
-    setErrorMsg(null)
-    if (!username || !nickname || !password || !password2) return setErrorMsg('請填入完整資料')
+    if (!username || !nickname || !password || !password2) return dispatch(setErrorMsg('請填入完整資料'))
 
-    if (password !== password2) return setErrorMsg('請確認兩次密碼是否相符')
-
-    const registerResult = await register(username, nickname, password)
+    if (password !== password2) return dispatch(setErrorMsg('請確認兩次密碼是否相符'))
     try {
-      if (registerResult.ok !== 1) return setErrorMsg(registerResult.message)
-
-      setAuthToken(registerResult.token)
-      const getUserData = await getMe()
-      if (getUserData.ok !== 1) {
-        setAuthToken(null)
-        return setErrorMsg(getUserData.toString())
+      const registerRes = await dispatch(register(username, nickname, password))
+      const getUserRes = await dispatch(getUser())
+      console.log(registerRes.ok === 1 && getUserRes.ok === 1)
+      if (registerRes.ok === 1 && getUserRes.ok === 1) {
+        history.push('/')
       }
-      setUser(getUserData.data)
-      history.push('/')
     } catch {
-      setErrorMsg('請稍後再登入看看')
+      dispatch(setErrorMsg('請稍後再登入看看'))
     }
   }
 
   const handleResetClick = () => {
-    setErrorMsg(null)
+    dispatch(setErrorMsg(null))
     setUsername('')
     setNickname('')
     setPassword('')
