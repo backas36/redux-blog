@@ -14,6 +14,7 @@ import PostPage from '../../pages/PostPage'
 import AddNewPostPage from '../../pages/AddNewPostPage'
 import RegisterPage from '../../pages/RegisterPage'
 import PostsListPage from '../../pages/PostsListPage/AllPostsPage'
+import EditPostPage from '../../pages/EditPostPage'
 import { useDispatch } from 'react-redux'
 import { getUser } from '../../redux/reducers/userReducer'
 const App = () => {
@@ -45,6 +46,7 @@ const App = () => {
         <Route path="/new-post">
           <AddNewPostPage />
         </Route>
+        <Route path="/edit-post/:id" children={<EditPostPage />} />
         <Route path="/register">
           <RegisterPage />
         </Route>

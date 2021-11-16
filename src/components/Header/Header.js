@@ -48,7 +48,6 @@ const Nav = styled(Link)`
 const Header = () => {
   const dispatch = useDispatch()
   const user = useSelector(store => store.user.user)
-  console.log(user)
   const handleLogout = () => {
     dispatch(logout())
   }

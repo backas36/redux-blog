@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import styled from "@emotion/styled"
 import { Link } from "react-router-dom"
-import { getPosts } from "../../WebAPI"
-
+import { useDispatch, useSelector } from "react-redux"
+import { getAllPosts, deletePost } from '../../redux/reducers/postReducer'
 
 const PostsWrapper = styled.main`
   max-width:960px;
@@ -15,6 +15,7 @@ const PostWrapper = styled.div`
   & + & {
     margin-top:20px;
   }
+  position:relative;
 `
 
 const PostTitle = styled(Link)`
@@ -31,7 +32,9 @@ const PostCreated = styled.div`
   display:flex;
   margin-top:12px;
 `
-
+const PostAuthor = styled.div`
+  margin-right:12px;
+`
 
 const PostDate = styled.div`
   font-weight:300;
@@ -61,41 +64,85 @@ const LinkToPost = styled(Link)`
     background:#ccc;
   }
 `
+const PostActions = styled.div`
+  position:absolute;
+  right: 30px;
+  bottom: 30px;
+`
+const PostActionBtn = styled.button`
+  margin-top:30px;
+  margin-left:8px;
+  display:inline-block;
+  color:rgba(0,0,0,0.6);
+  text-decoration:none;
+  border:1px solid #ccc;
+  padding:8px 24px;
+  background:#fff;
+  cursor:pointer;
+  transition: background 0.2s;
+  &:hover{
+    background:#ccc;
+  }
+  
+`
 
-const Post = ({ post }) => {
-  const { title, createdAt, id, body } = post
-  return (
-    <>
-      <PostWrapper>
-        <PostTitle to={`/posts/${id}`}>{title}</PostTitle>
-        <PostCreated>
-          <PostDate>{new Date(createdAt).toLocaleString()}</PostDate>
-        </PostCreated>
-        <PostBody>{body}</PostBody>
-        <LinkToPost to={`/posts/${id}`}>Read More</LinkToPost>
-      </PostWrapper>
-    </>
-  )
-}
 
 const PostsListPage = () => {
-  const [posts, setPosts] = useState([])
+  const dispatch = useDispatch()
+  const isLoading = useSelector(store => store.posts.isLoadingPost)
+  const posts = useSelector(store => store.posts.posts)
+  const user = useSelector(store => store.user.user)
 
   useEffect(() => {
-    const fetchPostsData = async () => {
-      const postsData = await getPosts()
-      setPosts(postsData)
-    }
-    fetchPostsData()
-  }, [])
+    dispatch(getAllPosts())
+  }, [dispatch])
+
+  const handleDelClick = (id) => {
+    dispatch(deletePost(id))
+      .then(res => dispatch(getAllPosts()))
+  }
+
+  const Post = ({ post }) => {
+    const { title, createdAt, id, body, userId } = post
+    return (
+      <>
+        <PostWrapper>
+          <PostTitle to={`/posts/${id}`}>{title}</PostTitle>
+          <PostCreated>
+            <PostAuthor>{post.user.nickname}</PostAuthor>
+
+            <PostDate>{new Date(createdAt).toLocaleString()}</PostDate>
+          </PostCreated>
+          <PostBody>{body}</PostBody>
+          <LinkToPost to={`/posts/${id}`}>Read More</LinkToPost>
+          {user && user.id === userId && (
+            <PostActions>
+              <Link to={`/edit-post/${id}`}>
+                <PostActionBtn>
+                  Edit
+                </PostActionBtn>
+              </Link>
+              <Link to={`/posts-list`} replace>
+
+                <PostActionBtn onClick={() => handleDelClick(id)}>Delete</PostActionBtn>
+              </Link>
+
+            </PostActions>
+          )}
+        </PostWrapper>
+      </>
+    )
+  }
 
   return (
     <>
-      <PostsWrapper>
-        {posts.map(post => (
-          < Post post={post} key={post.id} />
-        ))}
-      </PostsWrapper>
+      {isLoading ? <div>Loading...</div> : (
+        <PostsWrapper>
+          {posts.map(post => (
+            < Post post={post} key={post.id} />
+          ))}
+        </PostsWrapper>
+      )}
     </>
   )
 }

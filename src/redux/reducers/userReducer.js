@@ -38,7 +38,10 @@ export const getLogin = (username, password) => (dispatch) => {
 export const getUser = () => (dispatch) => {
   return getMe()
     .then(res => {
-      if (res.ok !== 1) return setAuthToken(null)
+      if (res.ok !== 1) {
+        setAuthToken(null)
+        return dispatch(setErrorMsg(res.message))
+      }
       dispatch(setUser(res.data))
       return res
     })

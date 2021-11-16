@@ -62,12 +62,16 @@ const LoginPage = () => {
   }, [dispatch])
 
   const handleSubmit = async (e) => {
+    dispatch(setErrorMsg(null))
     if (!username || !password) return dispatch(setErrorMsg('請填入完整資料'))
 
     try {
-      await dispatch(getLogin(username, password))
-      await dispatch(getUser())
-      history.push('/')
+      const res = await dispatch(getLogin(username, password))
+      if (!res.token) return
+      const reuslt = await dispatch(getUser())
+      if (reuslt.data) {
+        history.push('/')
+      }
     } catch {
       dispatch(setErrorMsg('請稍後再登入看看'))
     }

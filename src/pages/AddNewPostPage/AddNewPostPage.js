@@ -71,9 +71,8 @@ const AddNewPostPage = () => {
   const history = useHistory()
 
   const dispatch = useDispatch()
-  //const newPostReponse = useSelector(store => store.posts.newPostResponse)
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async () => {
     setErrorMsg(null)
     if (!postTitle || !postBody) return setErrorMsg('請填入完整內容')
 
@@ -87,20 +86,11 @@ const AddNewPostPage = () => {
     }
   }
 
-  //useEffect(() => {
-  //  return () => {
-  //    dispatch(setNewPostResponse(null))
-  //  }
-  //}, [dispatch])
-
-  //useEffect(() => {
-  //  if (newPostReponse) {
-  //    if (newPostReponse.ok === 0) return setErrorMsg(newPostReponse.message)
-  //    history.push('/posts/' + newPostReponse.id)
-  //  }
-
-  //}, [newPostReponse, history])
-
+  const handleCleanClick = () => {
+    setPostTitle('')
+    setPostBody('')
+    setErrorMsg('')
+  }
 
   return (
     <FormWrapper onSubmit={handleSubmit}>
@@ -117,7 +107,7 @@ const AddNewPostPage = () => {
       </div>
       <ButtonWrapper>
         <Button type="submit">新增文章</Button>
-        <Button>重新填寫</Button>
+        <Button type="button" onClick={handleCleanClick}>重新填寫</Button>
         {errorMsg && <ErrorMsg>{errorMsg}</ErrorMsg>}
       </ButtonWrapper>
     </FormWrapper>
