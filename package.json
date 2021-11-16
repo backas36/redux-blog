@@ -17,7 +17,7 @@
     "redux": "^4.1.2",
     "web-vitals": "^1.0.1"
   },
-  "homepage": "https://backas36.github.io/week22-blog/",
+  "homepage": "https://backas36.github.io/redux-blog",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
